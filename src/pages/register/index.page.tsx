@@ -10,6 +10,12 @@ import { ArrowRight } from "phosphor-react";
 
 import { z } from "zod";
 
+import { AxiosError } from "axios";
+
+import { Toaster, toast } from "react-hot-toast";
+
+import api from "@/src/lib/axios";
+
 import { Button, MultiStep, Text, TextInput } from "@ignite-ui/react";
 
 import { Container, Form, FormError, Header } from "./styles";
@@ -32,7 +38,7 @@ export default function Register() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitted },
+    formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
   });
@@ -46,11 +52,21 @@ export default function Register() {
   }, [router.query?.username, setValue]);
 
   async function handleRegister(data: RegisterFormData) {
-    console.log(data);
+    try {
+      await api.post("/users", {
+        name: data.name,
+        username: data.username,
+      });
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data.message) {
+        toast.error("Houve um erro ao cadastrar o usuário.");
+      }
+    }
   }
 
   return (
     <Container>
+      <Toaster />
       <Header as="strong">Bem vindo</Header>
       <Text>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. A voluptas
@@ -87,7 +103,7 @@ export default function Register() {
           )}
         </label>
 
-        <Button type="submit" disabled={isSubmitted}>
+        <Button type="submit">
           Próximo passo
           <ArrowRight />
         </Button>
