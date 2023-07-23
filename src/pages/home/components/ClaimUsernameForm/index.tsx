@@ -28,7 +28,7 @@ export function ClaimUsernameForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitted },
+    formState: { errors },
   } = useForm<ClaimUsernameFormData>({
     resolver: zodResolver(claimUsernameFormSchema),
   });
@@ -50,7 +50,7 @@ export function ClaimUsernameForm() {
           placeholder="seu-usuario"
           {...register("username")}
         />
-        <Button size="sm" type="submit" disabled={isSubmitted}>
+        <Button size="sm" type="submit">
           Reservar usuário
           <ArrowRight />
         </Button>
